@@ -1,7 +1,18 @@
+# frozen_string_literal: true
+
 require 'pathname'
 
-$APP_ROOT = Pathname.new File.expand_path(File.join(File.dirname(__FILE__), '..'))
-$LOAD_PATH.unshift($APP_ROOT)
+class RootPath
+  def pathname
+    Pathname.new File.expand_path(File.join(File.dirname(__FILE__), '..'))
+  end
+
+  def join(path)
+    pathname.join path
+  end
+end
+
+$LOAD_PATH.unshift(RootPath.new.pathname)
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
@@ -45,7 +56,7 @@ RSpec.configure do |config|
   # Allows RSpec to persist some state between runs in order to support
   # the `--only-failures` and `--next-failure` CLI options. We recommend
   # you configure your source control system to ignore this file.
-  config.example_status_persistence_file_path = "spec/examples.txt"
+  config.example_status_persistence_file_path = '.rspec_status'
 
   # Limits the available syntax to the non-monkey patched syntax that is
   # recommended. For more details, see:
