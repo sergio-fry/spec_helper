@@ -1,18 +1,15 @@
-# frozen_string_literal: true
-
 require 'pathname'
+require 'active_support/core_ext/module/delegation'
 
 class RootPath
   def pathname
     Pathname.new File.expand_path(File.join(File.dirname(__FILE__), '..'))
   end
 
-  def join(path)
-    pathname.join path
-  end
+  delegate :join, :to_s, to: :pathname
 end
 
-$LOAD_PATH.unshift(RootPath.new.pathname)
+$LOAD_PATH.unshift(RootPath.new.to_s)
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
