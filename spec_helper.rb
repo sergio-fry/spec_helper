@@ -1,15 +1,19 @@
 require 'pathname'
-require 'active_support/core_ext/module/delegation'
 
 class RootPath
   def pathname
     Pathname.new File.expand_path(File.join(File.dirname(__FILE__), '..'))
   end
 
-  delegate :join, :to_s, to: :pathname
+  def to_s = pathname.to_s
+  def join(*args) = pathname.join(*args)
 end
 
 $LOAD_PATH.unshift(RootPath.new.to_s)
+
+module WithRoot
+  def root = RootPath.new
+end
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
@@ -84,4 +88,7 @@ RSpec.configure do |config|
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
   Kernel.srand config.seed
+
+  # use `root` in specs to access RootPath instance
+  config.include WithRoot
 end
